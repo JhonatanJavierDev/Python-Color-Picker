@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Selector de Colores</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .color-box {
+      display: inline-block;
+      margin: 10px;
+      width: 60px;
+      height: 60px;
+      border-radius: 5px;
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    input[type="color"] {
+      height: 60px;
+      width: 50px; /* Recomendable usar % en caso de que se quiera hacer responsive */
+      border: none;
+      border-radius: 5px;
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      outline: none;
+      cursor: pointer;
+    }
+
+    p {
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    @media screen and (max-width: 768px) {
+      .color-box,
+      input[type="color"] {
+        height: 40px;
+        width: 40px;
+      }
+
+      input[type="color"] {
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Selector de Colores</h1>
+  <div style="text-align: center;">
+    <div class="color-box" id="color-preview"></div>
+  </div>
+  <form method="POST" action="{{ url_for('update_color') }}">
+    <label for="color-picker">Selecciona un color:</label>
+    <input type="color" id="color-picker" name="color-picker">
+  </form>
+  <p>El código hexadecimal del color seleccionado es: <span id="color-code">{{ color_code }}</span></p>
+  <script>
+    const colorPicker = document.getElementById('color-picker');
+    const colorCode = document.getElementById('color-code');
+    const colorPreview = document.getElementById('color-preview');
+
+    colorPicker.addEventListener('change', () => {
+      fetch('/update-color', {
+        method: 'POST',
+        body: new FormData(document.querySelector('form'))
+      })
+      .then(response => response.json())
+      .then(data => {
+        colorCode.textContent = data.color_code;
+        colorPreview.style.backgroundColor
